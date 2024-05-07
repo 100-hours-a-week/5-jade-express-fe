@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in</title>
+    <meta name="description" content="회원가입할 수 있는 페이지">
+    <link rel="stylesheet" href="http://localhost:3000/static/Sign in.css">
+    <link rel="stylesheet" href="http://localhost:3000/static/header.css">
+    <script type="text/javascript" src="http://localhost:3000/views/Sign in.js"></script>
+</head>
+<body>
+    <section>
+        <header class="header">
+            <a href="http://localhost:3000/views/Log in.html">
+                <img 
+                src="http://localhost:3000/static/navigate_before.svg" 
+                alt="to login page"
+                >
+            </a>
+            <h1>아무 말 대잔치</h1>
+        </header>
+    </section>
+    <section class="signin">
+        <h2>회원가입</h2>
+        <form class="signin_form" method="post" onchange="validateForm();">
+            <label for="profile"
+            class="input_label"
+            >프로필 사진</label>
+            <label for="profile" class="helper_text">* 프로필 사진을 추가해주세요.(보류)</label>
+            <input type="image"
+            name="profile"
+            id="image"
+            >
+
+            <label for="email"
+            class="input_label"
+            >이메일*</label>
+            <input type="email"
+            name="email"
+            class="email"
+            pattern="[a-z0-9.,]+@[a-z0-9.,]+\.[a-z]{2,4}$"
+            placeholder="이메일을 입력하세요"
+            >
+            <label for="email"
+            id="email_helper"
+            class="helper_text">* 이메일을 입력해주세요</label>
+            <!-- 이메일 확인도 JS로 하자 -->
+
+            <label for="password"
+            class="input_label"
+            >비밀번호*</label>
+            <input type="password"
+            name="password"
+            class="password"
+            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,20}$"
+            placeholder="비밀번호를 입력하세요"
+            >
+            <label for="password" 
+            id="password_helper" 
+            class="helper_text">* 비밀번호를 입력해주세요</label>
+
+            <label for="password_check"
+            class="input_label"
+            >비밀번호 확인*</label>
+            <label for="password_check" 
+            id="password_check_helper"
+            class="helper_text">* 비밀번호를 한번더 입력해주세요</label>
+            <input type="password"
+            name="password_check"
+            class="password_check"
+            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,20}$"
+            placeholder="비밀번호를 한번 더 입력하세요"
+            >
+            <!-- 비밀번호 확인도 JS로 하자 -->
+            
+            <label for="nickname"
+            class="input_label"
+            >닉네임*</label>
+            <input type="text"
+            name="nickname"
+            class="nickname"
+            placeholder="닉네임을 입력하세요"
+            >
+            <label for="nickname" 
+            id="nickname" 
+            class="helper_text">* 닉네임을 입력해주세요</label>
+            <!-- 닉네임 확인도 JS로 하자 -->
+
+            <button type="button" 
+            id="submit" 
+            onclick="Signin();"
+            class="signin_button">회원가입</button>
+            <!-- 버튼색상 변경도 JS로 하자 -->
+        </form>
+        <a href="http://localhost:3000/views/Log in.html" class="goto_login">로그인하러 가기</a>
+    </section>
+    <script type="module" src="Sign in.js"></script>
+</body>
+</html>

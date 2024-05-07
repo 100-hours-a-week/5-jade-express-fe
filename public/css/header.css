@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap");
+/* 페이지 설정 */
+body {
+    justify-content: center;
+    align-items: center;
+    font-family: "Noto Sans KR", sans-serif;
+    background-color: #F4F5F7;
+    margin: 0 auto;
+    padding: 0 auto;
+}
+input{
+    margin: 0 auto;
+    padding: 0 auto;
+}
+.header{
+    display: flex;
+    width: 100%;
+    height: 103px;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid;
+}
+.header h1{
+    text-align: center;
+    font-weight: 400;
+    margin: 0;
+    font-size:32px;
+}
+.header .dropdown_checkbox{
+    display: none;
+}
+.header .profile_img_hidden{
+    position: relative;
+    width: 36px;
+    height: 36px;
+    visibility: hidden;
+}
+.header a, .header img{
+    position: relative;
+    width: 40px;
+    height: 40px;
+    right:11%;
+}
+.header .profile_img{
+    position: relative;
+    left: 11%;
+    width: 36px;
+    height: 36px;
+    border-radius: 100%;
+    cursor: pointer;
+    background-image: url('./pexels-photo-255379.jpeg');
+}
+.dropdown{
+    display: inline-block;
+    position: absolute;
+    width: 115px;
+    height: 105px;
+    top: 80px;
+    left: 63%;
+    background-color: #d9d9d9;
+	opacity: 0;
+    visibility: hidden;
+}
+.dropdown ul{
+    width: 115px;
+    height: 105px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    padding: 0 auto;
+    padding-inline-start: 0px;
+    list-style: none;
+}
+.dropdown_text{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 115px;
+    height: 35px;
+    padding: 0px 12px 0px 12px;
+    color: black;
+}
+.dropdown ul a{
+    text-decoration: none;
+}
+.dropdown_checkbox:checked + .dropdown{
+	opacity: 1;
+    visibility: visible;
+}

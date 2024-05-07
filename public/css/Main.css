@@ -1,0 +1,118 @@
+.content_list{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+}
+.content_list h2{
+    margin: 0 auto;
+    font-size: 24px;
+    font-weight: 400;
+    text-align: center;
+}
+.content_list .write_button{
+    position: relative;
+    width: 138px;
+    height: 36px;
+    background-color: #ACA0EB;
+    border-radius: 16px;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+}
+.content_list .write_anchor{
+    position: relative;
+    left: 230px;
+    width: 138px;
+    height: 36px;
+    margin-top: 24px;
+    border-radius: 16px;
+    border: none;
+}
+.write_button:hover{
+    background-color: #7F6AEE;
+}
+.content_list a{
+    text-decoration: none;
+}
+a:link, a:visited {
+  color: black;
+}
+.content_list .content{
+    width: 592px;
+    height: 179px;
+    border-radius: 16px;
+    border: none;
+    padding: 0 auto;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    box-shadow: 3px 3px 3px rgb(230, 230, 230);
+}
+.content_header{
+    margin: 24px;
+    display: flex;
+    flex-direction: column;
+}
+.content_header h2{
+    font-size: 20px;
+    width: 100%;
+    text-align: left;
+}
+.content_header .content_info{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+}
+.content_header div{
+    flex-basis: 50%;
+    display: flex;
+    flex-direction: row;
+}
+.content_header h6{
+    margin: 0;
+    margin-right: 10px;
+    font-weight: 400;
+    font-size: 14px;
+}
+.content_header h5{
+    flex-basis: 50%;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: right;
+    margin: 0 auto;
+    padding: 0 auto;
+}
+.content hr{
+    color: #F4F5F7;
+    width: 100%;
+    border: 1px solid #f4f5f7;
+}
+.content_writer{
+    flex-basis: 100%;
+    padding-left: 24px;
+    width: 100%;
+    margin: 0 auto;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+.content_writer img{
+    color: #7F6AEE;
+    width: 36px;
+    height: 36px;
+    border-radius: 100%;
+}
+.content_writer h6{
+    margin: 0 auto;
+    padding-left: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    flex-basis: 90%;
+}

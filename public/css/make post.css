@@ -1,0 +1,80 @@
+.make{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.make h1{
+    font-size: 24px;
+    font-weight: 700;
+}
+.post_form{
+    width: 592px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.post_form hr{
+    color: #d9d9d9;
+    width: 100%;
+    border: 1px solid #d9d9d9;
+}
+.post_form .post_label{
+    width: 100%;
+    padding-top: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    padding-left: 48px;
+    text-align: left center;
+}
+.post_form .post_input{
+    margin: 0 auto;
+    width: 100%;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    padding-left: 24px;
+    background-color: #F4F5F7;
+    border: none;
+}
+.post_form .post_textarea{
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    width: 100%;
+    background-color: #F4F5F7;
+    border: none;
+    resize: none;
+}
+.post_form .helper_text{
+    padding-left: 36px;
+    width: 100%;
+    color: #FF3333;
+    font-size: 12px;
+    font-weight: 400;
+    text-align: left;
+    opacity: 1;
+}
+.post_form #file{
+    width: 100%;
+    margin-top: 8px;
+    padding-left: 24px;
+}
+.post_form .submit_button{
+    background-color: #7F6AEE;
+    width: 355px;
+    height: 33px;
+    margin-top: 20px;
+    border-radius: 4px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+}
