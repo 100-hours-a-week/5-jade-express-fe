@@ -1,15 +1,4 @@
-// user 파일 받아오는부분
-async function loadFile(filename){
-    const path = `http://localhost:3000/${filename}`;
-    try{
-        const response = await fetch(path);
-        const json = await response.json();
-        return json;
-    } catch(error){
-        console.error('error: ', error);
-        return null;
-    }
-}
+const getData = require('./fileFetch').getData;
 
 function validate(){
     const validateEmail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -36,33 +25,24 @@ function validate(){
         return true;
     }
 }
-function findUser(email, password, userData){
-    const user = userData.find(elem=>elem.email===email)
-    if(!user){
-        return true;
-    } else if(user.password!=password){
-        return true;
-    } else{
-        return false;
-    }
-}
-
-// form에서 받아오는걸로 대체해볼까
 
 async function buttonClicked(){
-    const dataArr = await loadFile("users/user.json");
     const emailInput = document.getElementsByClassName("email")[0].value;
     const passwordInput = document.getElementsByClassName("password")[0].value;
     if(validate(emailInput, passwordInput)){
-        if(findUser(emailInput, passwordInput, dataArr)){
-            console.log("해당하는 사용자가 없습니다");
-        } else{
-            const button = document.getElementsByClassName("login_button")[0];
-            button.style.backgroundColor="#7F6AEE";
-            button.style.cursor="grab";
-            setTimeout(()=>{
-                window.location.assign("http://localhost:3000/views/Main.html");
-            }, 3000);
-        }
+        const data = {email:emailInput, password:passwordInput}
+        await getData("login", data)
+        .then(response=>{
+            if(response.status==200){
+                const button = document.getElementsByClassName("login_button")[0];
+                button.style.backgroundColor="#7F6AEE";
+                button.style.cursor="grab";
+                setTimeout(()=>{
+                    window.location.assign("/Main");
+                }, 3000);
+            } else {
+                console.log("해당하는 사용자가 없습니다");
+            }
+        })
     }
 }

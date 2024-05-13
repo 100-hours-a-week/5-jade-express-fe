@@ -1,14 +1,6 @@
-async function loadFile(filename){
-    const path = `http://localhost:3000/${filename}`;
-    try{
-        const response = await fetch(path);
-        const json = await response.json();
-        return json;
-    } catch(error){
-        console.error('error: ', error);
-        return null;
-    }
-}
+const getData = require('./fileFetch').getData;
+const deleteData = require('./fileFetch').deleteData;
+const patchData = require('./fileFetch').patchData;
 
 window.addEventListener("load", (event)=>{
     getUser();
@@ -16,15 +8,21 @@ window.addEventListener("load", (event)=>{
 
 async function getUser(){
     const userId = 1; // 임시로 유저아이디 1로 지정
-    const userList = await loadFile("users/user.json");
-    const index = userList.findIndex(elem=>elem.userId===userId);
-    const user = userList[index];
+    let user;
+    await getData(`user/${userId}`, {})
+    .then(response=>{
+        if(response.status==200){
+            user = response.data;
+        } else{
+            console.log("해당하는 사용자가 없습니다");
+        }});
     const email = document.getElementsByClassName("show_only")[0];
     email.innerHTML = user.email;
     const nickname = document.getElementById("nickname");
     nickname.value = user.nickname;
 }
-function findNickname(nickname, userData){
+async function findNickname(nickname){
+    const userList = await getData("user", {});
     const user = userData.find(elem=>elem.nickname===nickname);
     if(!user){
         return false;
@@ -33,7 +31,6 @@ function findNickname(nickname, userData){
     }
 }
 async function helperChanger(){
-    const userList = await loadFile("users/user.json");
     const helper = document.getElementsByClassName("helper_text")[0];
     const nickname = document.getElementById("nickname");
     if(nickname.value.length===0){
@@ -45,13 +42,16 @@ async function helperChanger(){
     } else {
         // 수정하기 클릭시 수정 성공
         const userId = 1; // 임시로 유저아이디 1로 지정
-        const userList = await loadFile("users/user.json");
-        const index = userList.findIndex(elem=>elem.userId===userId);
-        const user = userList[index];
-        user.nickname = nickname.value;
-        userList[index] = user;
-        console.log(userList);
-        // post to user.json
+        const data = {nickname:nickname.value};
+        await patchData(`user/${userId}`, data)
+        .then(response=>{
+            if(response.status==200){
+                console.log(response.body);
+                console.log("닉네임 수정이 완료되었습니다.");
+            } else {
+                console.log("닉네임 수정에 실패했습니다.");
+            }
+        });
         const toast = document.getElementsByClassName("profile_message")[0];
         toast.style.opacity = 1;
         setTimeout(()=>{
@@ -73,25 +73,13 @@ function cancelUser(){
 // 회원 탈퇴
 async function deleteUser(){
     const userId = 1;
-    const userList = await loadFile("users/user.json");
-    const commentList = await loadFile("comments/comment.json");
-    const postList = await loadFile("posts/post.json");
-    // 댓글 삭제
-    let index = 1;
-    while(index>-1){
-        index = commentList.findIndex(elem=>elem.writer === userId);
-        if(index>-1) commentList.splice(index, 1);
-    }
-    // 게시글 삭제
-    index = 1;
-    while(index>-1){
-        index = postList.findIndex(elem=>elem.userId===userId);
-        if(index>-1) postList.splice(index, 1);
-    }
-    // 유저 삭제
-    index = userList.findIndex(elem=>elem.userId===userId);
-    if(index>-1) userList.splice(index, 1);
-    console.log(userList);
-    // post userList to user.json
-    window.location.assign("http://localhost:3000/views/Log in.html");
+    await deleteData(`user/${userId}`)
+    .then(response=>{
+        if(response.status==200){
+            console.log("회원탈퇴가 완료되었습니다.");
+        } else {
+            console.log("회원탈퇴에 실패했습니다.");
+        }
+    });
+    window.location.assign("/");
 }

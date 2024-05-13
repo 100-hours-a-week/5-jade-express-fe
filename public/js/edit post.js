@@ -1,14 +1,5 @@
-async function loadFile(filename){
-    const path = `http://localhost:3000/${filename}`;
-    try{
-        const response = await fetch(path);
-        const json = await response.json();
-        return json;
-    } catch(error){
-        console.error('error: ', error);
-        return null;
-    }
-}
+const getData = require('./fileFetch').getData;
+const patchData = require('./fileFetch').patchData;
 
 // 이벤트 필요
 window.addEventListener("load", (event) => {
@@ -17,8 +8,7 @@ window.addEventListener("load", (event) => {
 
 async function getPost(){
     const postId = 1;
-    const postList = await loadFile(`posts/post.json`);
-    const post = postList.find(elem=>elem.id===postId);
+    const post = await getData(`post/${postId}`, {});
     const title = document.getElementById("title");
     title.value = post.title;
     const detail = document.getElementById("detail");
@@ -29,17 +19,14 @@ async function getPost(){
 }
 
 async function editPost(){
-    const postId = 1;
-    let postList = await loadFile(`posts/post.json`);
-    const postIndex = postList.findIndex(elem=>elem.id===postId);
     const title = document.getElementById("title");
     const detail = document.getElementById("detail");
-    //const image = document.getElementById("file");
-    postList[postIndex].title = title.value;
-    postList[postIndex].content = detail.value;
-    console.log(postList);
-    //postList[postIndex].image = file.value;
-
-    // post to post.json 구현 필요
-    window.location.assign("http://localhost:3000/views/post.html");
+    const postId = 1;
+    const data = {
+        title: title, 
+        content: detail, 
+        image: "http://image.com/test"
+    };
+    await patchData(`post/${postId}`, data)
+    window.location.assign("/post");
 }
