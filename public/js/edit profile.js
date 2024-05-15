@@ -42,6 +42,7 @@ async function helperChanger(){
     } else {
         // 수정하기 클릭시 수정 성공
         const userId = 1; // 임시로 유저아이디 1로 지정
+        // 이후 세션에서 받아오는걸로 수정
         const data = {nickname:nickname.value};
         await patchData(`user/${userId}`, data)
         .then(response=>{
@@ -55,7 +56,7 @@ async function helperChanger(){
         const toast = document.getElementsByClassName("profile_message")[0];
         toast.style.opacity = 1;
         setTimeout(()=>{
-            toast.style.opacity=0;
+            toast.style.opacity = 0;
         }, 2000);
     }
 }
@@ -63,7 +64,7 @@ async function helperChanger(){
 function showModal(){
     const modal = document.getElementById("user_modal");
     modal.style.display="block";
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
 }
 function cancelUser(){
     const modal = document.getElementById("user_modal");
@@ -73,6 +74,7 @@ function cancelUser(){
 // 회원 탈퇴
 async function deleteUser(){
     const userId = 1;
+    // 이후 세션에서 받아오는걸로 수정
     await deleteData(`user/${userId}`)
     .then(response=>{
         if(response.status==200){

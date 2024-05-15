@@ -16,7 +16,7 @@ function helperChanger(){
 
 }
 async function postGenerator(){
-    //const userId = await findUser();
+    // 나중에 세션에서 userId 받아오면됨
     const userId = 1;
     // 게시글 본문을 LONGTEXT타입으로 저장 어떻게 함
     const title = document.getElementById("title");

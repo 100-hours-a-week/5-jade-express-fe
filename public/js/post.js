@@ -5,11 +5,14 @@ const deleteData = require('./fileFetch').deleteData;
 
 // 이벤트
 window.addEventListener("load", (event) => {
-    getPost();
+    const url = window.location.href;
+    const postId = url.match(/\/(\d+)$/)[1];
+    getPost(postId);
     // 댓글창 값 추적하기
     // mutationObserver 사용해서 값 변경 추적
     // mutation으로 하니까 작동안함
 });
+
 // 아래 함수를 onchange()로 불러오는 방법으로 변경
 function commentColor(){
     const target = document.getElementById("comment_textarea");
@@ -36,14 +39,17 @@ function showComment(){
     const modal = document.getElementById("comment_modal");
     modal.style.display="block";
     document.body.style.overflow = 'hidden';
+    const deleteButton = document.getElementById("comment_proc");
+    deleteButton.setAttribute("onclick", `deleteComment(${commentId})`);
 }
 function showPost(postId){
     const modal = document.getElementById("post_modal");
     modal.style.display="block";
     document.body.style.overflow = 'hidden';
+    const deleteButton = document.getElementById("post_proc");
+    deleteButton.setAttribute("onclick", `deletePost(${postId})`);
 }
 async function editComment(commentId){
-    const commentId = 1;
     const comment = await getData(`comment/${commentId}`, {});
     const button = document.getElementById("comment_write_button");
     button.innerHTML = "댓글 수정";
@@ -59,7 +65,7 @@ async function editComment(commentId){
                 console.log("댓글이 수정되었습니다.");
                 textarea.value = "";
                 button.innerHTML = "댓글 등록";
-                button.setAttribute("onclick", "postComment()");
+                button.setAttribute("onclick", `postComment(${postId})`);
             } else {
                 console.log("댓글 수정에 실패했습니다.");
             }
@@ -78,13 +84,11 @@ async function deleteComment(commentId){
         }
     });
 }
-function editPost(){
-    // 경로 수정 필요 - 라우팅
-    window.location.assign("/edit post");
+function editPost(postId){
+    window.location.assign(`/edit post/${postId}`);
 }
-async function deletePost(){
+async function deletePost(postId){
     // 게시글 삭제
-    const postId = 1;
     await deleteData(`post/${postId}`)
     .then(response=>{
         if(response.status==200){
@@ -95,8 +99,7 @@ async function deletePost(){
         }
     });
 }
-async function getPost(){
-    const postId = 1;
+async function getPost(postId){
     const post = await getData(`post/${postId}`, {});
     const comment = await getData(`comments/${postId}`, {});
     const userList = await getData("user", {});
@@ -187,17 +190,17 @@ async function getPost(){
             commentContainer.innerHTML = `
                     <div class="content_info">
                         <div class="content_writer">
-                            <img src="http://localhost:3000/static/profile.svg" alt="">
+                            <img src="/public/images/profile.svg" alt="">
                             <h6>${commenter.nickname}</h6>
                             <h5>
                                 ${com.time}
                             </h5>
                         </div>
                         <div class="content_edit">
-                            <button class="edit" id="edit" onclick="editComment(${com.commentId})">
+                            <button class="edit" id="com_edit_${com.commentId}" onclick="editComment(${com.commentId})">
                                 수정
                             </button>
-                            <button class="edit" id="delete" onclick="showComment(${com.commentId})">
+                            <button class="edit" id="com_delete_${com.commentId}" onclick="showComment(${com.commentId})">
                                 삭제
                             </button>
                         </div>
@@ -213,7 +216,6 @@ async function getPost(){
 
 // 댓글 작성부분
 async function postComment(postId){
-    const postId = 1;
     const text = document.getElementById("comment_textarea");
     const data = {text: text.value};
     await postData(`comment/${postId}`, data)
@@ -226,6 +228,7 @@ async function postComment(postId){
         }
     });
 }
+
 // 이거 모달창때문에 commentId, postId 넘겨주는게 좀 힘들거같은데 이걸 어떻게하지
 // 아니면 route에서 postId 어떻게 들고오는지, 되면 더 편할듯
 // commentId만 어떻게 함수통해서 잘 넘겨주면 되는데 그러면 모달창은 일단 분리해야됨
