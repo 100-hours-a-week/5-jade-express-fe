@@ -48,7 +48,7 @@ input{
     height: 36px;
     border-radius: 100%;
     cursor: pointer;
-    background-image: url('./pexels-photo-255379.jpeg');
+    background-image: url('/public/images/pexels-photo-255379.jpeg');
 }
 .dropdown{
     display: inline-block;

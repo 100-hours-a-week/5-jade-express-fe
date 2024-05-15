@@ -1,4 +1,4 @@
-const getData = require('./fileFetch').getData;
+import { getData } from './fileFetch.js';
 
 // postGenerator를 작동시키는 이벤트가 필요
 window.addEventListener("load", (event) => {

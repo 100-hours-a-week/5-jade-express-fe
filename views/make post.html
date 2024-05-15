@@ -7,12 +7,12 @@
     <meta name="description" content="게시글 작성 페이지">
     <link rel="stylesheet" href="/public/css/make post.css">
     <link rel="stylesheet" href="/public/css/header.css">
-    <script type="text/javascript" src="/public/css/make post.js"></script>
+    <script type="module" src="/public/css/make post.js"></script>
 </head>
 <body>
     <section>
         <header class="header">
-            <a href="/Main.html">
+            <a href="/Main">
                 <img 
                 src="/public/images/navigate_before.svg" 
                 alt="to Main page"
@@ -28,17 +28,17 @@
             id="checkbox">
             <div class="dropdown">
                 <ul>
-                    <a href="/edit profile.html">
+                    <a href="/edit_profile">
                         <li class="dropdown_text">
                             회원정보수정
                         </li>    
                     </a>
-                    <a href="/edit password.html">
+                    <a href="/edit_password">
                         <li class="dropdown_text">
                             비밀번호수정
                         </li>    
                     </a>
-                    <a href="/Log in.html">
+                    <a href="/logout">
                         <li class="dropdown_text">
                             로그아웃
                         </li>
@@ -51,7 +51,7 @@
         <h1>
             게시글 작성
         </h1>
-        <form class="post_form" onchange="helperChanger()">
+        <form class="post_form">
             <label for="title" class="post_label">제목*</label>
             <hr>
             <input type="text"
@@ -84,7 +84,6 @@
 
             <button
             id="submit" 
-            onclick="postGenerator()"
             class="submit_button">완료</button>
         </form>
     </section>

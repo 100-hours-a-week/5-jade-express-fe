@@ -7,12 +7,12 @@
     <meta name="description" content="게시글 상세조회 페이지">
     <link rel="stylesheet" href="/public/css/post.css">
     <link rel="stylesheet" href="/public/css/header.css">
-    <script type="text/javascript" src="/public/js/post.js"></script>
+    <script type="module" src="/public/js/post.js"></script>
 </head>
 <body>
     <section>
         <header class="header">
-            <a href="/Main.html">
+            <a href="/Main">
                 <img 
                 src="/public/images/navigate_before.svg" 
                 alt="to Main page"
@@ -28,17 +28,17 @@
             id="checkbox">
             <div class="dropdown">
                 <ul>
-                    <a href="/edit profile.html">
+                    <a href="/edit_profile">
                         <li class="dropdown_text">
                             회원정보수정
                         </li>    
                     </a>
-                    <a href="/edit password.html">
+                    <a href="/edit_password">
                         <li class="dropdown_text">
                             비밀번호수정
                         </li>    
                     </a>
-                    <a href="/Log in.html">
+                    <a href="/logout">
                         <li class="dropdown_text">
                             로그아웃
                         </li>
@@ -54,9 +54,9 @@
             <p>삭제한 내용은 복구 할 수 없습니다.</p>
             <div class="button_container">
                 <button type="button" class="cancel_btn" 
-                id="post_cancel" onclick="cancelPost()">취소</button>
+                id="post_cancel">취소</button>
                 <button type="button" class="proc_btn" 
-                id="post_proc" onclick="deletePost()">확인</button>
+                id="post_proc">확인</button>
             </div>
         </div>
     </div>
@@ -66,9 +66,9 @@
             <p>삭제한 내용은 복구 할 수 없습니다.</p>
             <div class="button_container">
                 <button type="button" class="cancel_btn" 
-                id="comment_cancel" onclick="cancelComment()">취소</button>
+                id="comment_cancel">취소</button>
                 <button type="button" class="proc_btn" 
-                id="comment_proc" onclick="deleteComment()">확인</button>
+                id="comment_proc">확인</button>
             </div>
         </div>
     </div>
@@ -81,14 +81,12 @@
             cols="30" 
             rows="10"
             placeholder="댓글을 남겨주세요!"
-            onchange="commentColor()"
             minlength="1"
             ></textarea>
             <hr>
             <button class="write_button"
             type=""
             id="comment_write_button"
-            onclick="postComment();"
             >
                 댓글 등록
             </button>

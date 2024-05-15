@@ -1,13 +1,22 @@
-const getData = require('./fileFetch').getData;
-const postData = require('./fileFetch').postData;
-const patchData = require('./fileFetch').patchData;
-const deleteData = require('./fileFetch').deleteData;
+import { getData, postData, patchData, deleteData } from './fileFetch.js';
 
+const postCancel = document.getElementById("post_cancel");
+const commentCancel = document.getElementById("comment_cancel");
+postCancel.addEventListener("click", cancelPost);
+commentCancel.addEventListener("click", cancelComment);
+const textarea = document.getElementById("comment_textarea");
+textarea.addEventListener("change", commentColor);
 // 이벤트
-window.addEventListener("load", (event) => {
+window.addEventListener("load", async (event) => {
     const url = window.location.href;
     const postId = url.match(/\/(\d+)$/)[1];
-    getPost(postId);
+    await getPost(postId)
+    const editButton = document.querySelector("#post_edit");
+    editButton.addEventListener("click", ()=>editPost(postId));
+    const deleteButton = document.querySelector("#post_delete");
+    deleteButton.addEventListener("click", ()=>showPost(postId));
+    const commentPostbtn = document.getElementById("comment_write_button");
+    commentPostbtn.addEventListener("click", ()=>postComment(postId));
     // 댓글창 값 추적하기
     // mutationObserver 사용해서 값 변경 추적
     // mutation으로 하니까 작동안함
@@ -35,74 +44,74 @@ function cancelPost(){
     modal.style.display="none";
     document.body.style.removeProperty("overflow");
 }
-function showComment(){
+function showComment(commentId){
     const modal = document.getElementById("comment_modal");
     modal.style.display="block";
     document.body.style.overflow = 'hidden';
     const deleteButton = document.getElementById("comment_proc");
-    deleteButton.setAttribute("onclick", `deleteComment(${commentId})`);
+    deleteButton.addEventListener("click", ()=>deleteComment(commentId));
 }
 function showPost(postId){
     const modal = document.getElementById("post_modal");
     modal.style.display="block";
     document.body.style.overflow = 'hidden';
     const deleteButton = document.getElementById("post_proc");
-    deleteButton.setAttribute("onclick", `deletePost(${postId})`);
+    deleteButton.addEventListener("click", ()=>deletePost(postId));
 }
 async function editComment(commentId){
     const comment = await getData(`comment/${commentId}`, {});
     const button = document.getElementById("comment_write_button");
     button.innerHTML = "댓글 수정";
+    
+    // 이부분 작업중
+    // 그냥 버튼 두개 만들고 하나 숨겼다가 표시하는게 나을듯
+    const listenerList = getEventListeners(button);
+    button.removeEventListener('click', listenerList.click[0].listener);
+    
+    
     const textarea = document.getElementById("comment_textarea");
-    button.setAttribute("onclick", "");
     textarea.value = comment.text;
     button.addEventListener('click', async (event)=>{
-        console.log(textarea.value);
         const data = {text: textarea.value};
-        await patchData(`comment/${commentId}`, data)
-        .then(response=>{
-            if(response.status==200){
-                console.log("댓글이 수정되었습니다.");
-                textarea.value = "";
-                button.innerHTML = "댓글 등록";
-                button.setAttribute("onclick", `postComment(${postId})`);
-            } else {
-                console.log("댓글 수정에 실패했습니다.");
-            }
-        });
+        const success = await patchData(`comment/${commentId}`, data);
+        if(success!=null && success){
+            console.log("댓글이 수정되었습니다.");
+            textarea.value = "";
+            button.innerHTML = "댓글 등록";
+            location.reload(true);
+        }
+        else {
+            console.log("댓글 수정에 실패했습니다.");
+        }
     })
 }
 
 async function deleteComment(commentId){
-    const commentId = 1;
-    await deleteData(`comment/${commentId}`)
-    .then(response=>{
-        if(response.status==200){
-            console.log("댓글이 삭제되었습니다.");
-        } else {
-            console.log("댓글 삭제에 실패했습니다.");
-        }
-    });
+    const success = await deleteData(`comment/${commentId}`)
+    if(success!==null && success){
+        console.log("댓글이 삭제되었습니다.");
+        location.reload(true);
+    } else {
+        console.log("댓글 삭제에 실패했습니다.");
+    }
 }
 function editPost(postId){
-    window.location.assign(`/edit post/${postId}`);
+    window.location.assign(`/edit_post/${postId}`);
 }
 async function deletePost(postId){
     // 게시글 삭제
-    await deleteData(`post/${postId}`)
-    .then(response=>{
-        if(response.status==200){
-            console.log("게시글이 삭제되었습니다.");
-            window.location.assign("/Main");
-        } else {
-            console.log("게시글 삭제에 실패했습니다.");
-        }
-    });
+    const success = await deleteData(`post/${postId}`)
+    if(success!==null && success){
+        console.log("게시글이 삭제되었습니다.");
+        window.location.assign("/Main");
+    } else {
+        console.log("게시글 삭제에 실패했습니다.");
+    }
 }
 async function getPost(postId){
-    const post = await getData(`post/${postId}`, {});
-    const comment = await getData(`comments/${postId}`, {});
-    const userList = await getData("user", {});
+    const post = await getData(`post/${postId}`);
+    const comment = await getData(`comments/${postId}`);
+    const userList = await getData("user");
     const postArticle = document.getElementsByClassName("content")[0];
     const commentArticle = document.getElementsByClassName("comment_list")[0];
     // 글 본문 부분
@@ -145,10 +154,10 @@ async function getPost(postId){
                             </h5>
                         </div>
                         <div class="content_edit">
-                            <button class="edit" id="edit" onclick="editPost(${post.postId})">
+                            <button class="edit" id="post_edit">
                                 수정
                             </button>
-                            <button class="edit" id="delete" onclick="showPost(${post.postId})">
+                            <button class="edit" id="post_delete">
                                 삭제
                             </button>
                         </div>
@@ -197,10 +206,10 @@ async function getPost(postId){
                             </h5>
                         </div>
                         <div class="content_edit">
-                            <button class="edit" id="com_edit_${com.commentId}" onclick="editComment(${com.commentId})">
+                            <button class="edit" id="com_edit_${com.commentId}">
                                 수정
                             </button>
-                            <button class="edit" id="com_delete_${com.commentId}" onclick="showComment(${com.commentId})">
+                            <button class="edit" id="com_delete_${com.commentId}">
                                 삭제
                             </button>
                         </div>
@@ -209,7 +218,11 @@ async function getPost(postId){
                         ${com.text}
                     </p>
             `
-            commentArticle.appendChild(commentContainer);
+            commentArticle.appendChild(commentContainer)
+            const editButton = document.querySelector(`#com_edit_${com.commentId}`);
+            const deleteButton = document.querySelector(`#com_delete_${com.commentId}`);
+            editButton.addEventListener("click", ()=>editComment(com.commentId));
+            deleteButton.addEventListener("click", ()=>showComment(com.commentId));
         });
     }
 }
@@ -218,15 +231,14 @@ async function getPost(postId){
 async function postComment(postId){
     const text = document.getElementById("comment_textarea");
     const data = {text: text.value};
-    await postData(`comment/${postId}`, data)
-    .then(response=>{
-        if(response.status==200){
-            console.log("댓글이 등록되었습니다.");
-            text.value = "";
-        } else {
-            console.log("댓글 등록에 실패했습니다.");
-        }
-    });
+    const success = await postData(`comment/${postId}`, data)
+    if(success!==null && success){
+        console.log("댓글이 등록되었습니다.");
+        text.value = "";
+        location.reload(true);
+    } else {
+        console.log("댓글 등록에 실패했습니다.");
+    }
 }
 
 // 이거 모달창때문에 commentId, postId 넘겨주는게 좀 힘들거같은데 이걸 어떻게하지

@@ -1,6 +1,9 @@
-const getData = require('./fileFetch').getData;
-const deleteData = require('./fileFetch').deleteData;
-const patchData = require('./fileFetch').patchData;
+import { getData, patchData, deleteData} from "./fileFetch.js";
+
+document.getElementById("submit").addEventListener("click", helperChanger);
+document.getElementsByClassName("dismiss")[0].addEventListener("click", showModal);
+document.getElementsByClassName("cancel_btn")[0].addEventListener("click", cancelUser);
+document.getElementsByClassName("proc_btn")[0].addEventListener("click", deleteUser);
 
 window.addEventListener("load", (event)=>{
     getUser();
@@ -8,21 +11,14 @@ window.addEventListener("load", (event)=>{
 
 async function getUser(){
     const userId = 1; // 임시로 유저아이디 1로 지정
-    let user;
-    await getData(`user/${userId}`, {})
-    .then(response=>{
-        if(response.status==200){
-            user = response.data;
-        } else{
-            console.log("해당하는 사용자가 없습니다");
-        }});
+    const user = await getData(`user/${userId}`)
     const email = document.getElementsByClassName("show_only")[0];
     email.innerHTML = user.email;
     const nickname = document.getElementById("nickname");
     nickname.value = user.nickname;
 }
 async function findNickname(nickname){
-    const userList = await getData("user", {});
+    const userData = await getData("user");
     const user = userData.find(elem=>elem.nickname===nickname);
     if(!user){
         return false;
@@ -44,20 +40,17 @@ async function helperChanger(){
         const userId = 1; // 임시로 유저아이디 1로 지정
         // 이후 세션에서 받아오는걸로 수정
         const data = {nickname:nickname.value};
-        await patchData(`user/${userId}`, data)
-        .then(response=>{
-            if(response.status==200){
-                console.log(response.body);
-                console.log("닉네임 수정이 완료되었습니다.");
-            } else {
-                console.log("닉네임 수정에 실패했습니다.");
-            }
-        });
-        const toast = document.getElementsByClassName("profile_message")[0];
-        toast.style.opacity = 1;
-        setTimeout(()=>{
-            toast.style.opacity = 0;
-        }, 2000);
+        const success = await patchData(`user/${userId}`, data)
+        if(success!==null&&success){
+            console.log("닉네임 수정이 완료되었습니다.");
+            const toast = document.getElementsByClassName("profile_message")[0];
+            toast.style.opacity = 1;
+            setTimeout(()=>{
+                toast.style.opacity = 0;
+            }, 2000);
+        } else{
+            console.log("닉네임 수정에 실패했습니다.");
+        }
     }
 }
 // 모달창 내부 함수
@@ -75,13 +68,11 @@ function cancelUser(){
 async function deleteUser(){
     const userId = 1;
     // 이후 세션에서 받아오는걸로 수정
-    await deleteData(`user/${userId}`)
-    .then(response=>{
-        if(response.status==200){
-            console.log("회원탈퇴가 완료되었습니다.");
-        } else {
-            console.log("회원탈퇴에 실패했습니다.");
-        }
-    });
-    window.location.assign("/");
+    const success = await deleteData(`user/${userId}`)
+    if(success!==null&&success){
+        console.log("회원탈퇴가 완료되었습니다.");
+        window.location.assign("/");
+    } else{
+        console.log("회원탈퇴에 실패했습니다.");
+    }
 }

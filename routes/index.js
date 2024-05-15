@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 });
 
 // 회원가입 페이지
-router.get('/Sign in', (req, res) =>
+router.get('/Sign_in', (req, res) =>
     res.sendFile(path.join(__dirname, "..", 'views', 'Sign in.html'))
 );
 
@@ -28,24 +28,29 @@ router.get('/post/:postId', (req, res) =>
 );
 
 // 게시글 작성 페이지
-router.get('/make post', (req, res) =>
+router.get('/make_post', (req, res) =>
     res.sendFile(path.join(__dirname, "..", 'views', 'make post.html'))
 );
 
 // 게시글 수정 페이지
-router.get('/edit post/:postId', (req, res) =>
+router.get('/edit_post/:postId', (req, res) =>
     res.sendFile(path.join(__dirname, "..", 'views', 'edit post.html'))
 );
 
 // 프로필 수정 페이지
-router.get('/edit profile', (req, res) =>
+router.get('/edit_profile', (req, res) =>
     res.sendFile(path.join(__dirname, "..", 'views', 'edit profile.html'))
 );
 
 // 비밀번호 수정 페이지
-router.get('/edit password', (req, res) =>
+router.get('/edit_password', (req, res) =>
     res.sendFile(path.join(__dirname, "..", 'views', 'edit password.html'))
 );
 
+// 로그아웃
+router.get('/logout', (req, res) => {
+    res.clearCookie('user');
+    res.redirect('/');
+});
 
 module.exports = router;

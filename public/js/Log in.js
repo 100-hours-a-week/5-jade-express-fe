@@ -1,6 +1,12 @@
-const getData = require('./fileFetch').getData;
+import { postData } from './fileFetch.js';
+const emailField = document.getElementsByClassName("email")[0];
+const passwordField = document.getElementsByClassName("password")[0];
+emailField.addEventListener("change", validate);
+passwordField.addEventListener("change", validate);
+const button = document.getElementsByClassName("login_button")[0];
+button.addEventListener("click", buttonClicked);
 
-function validate(){
+export function validate(){
     const validateEmail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     const validatePassword = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,20}$/;
     const email = document.getElementsByClassName("email")[0].value;
@@ -26,23 +32,24 @@ function validate(){
     }
 }
 
-async function buttonClicked(){
+export async function buttonClicked(){
     const emailInput = document.getElementsByClassName("email")[0].value;
     const passwordInput = document.getElementsByClassName("password")[0].value;
-    if(validate(emailInput, passwordInput)){
+    if(validate()){
+        const userId = 1;
+        // 세션에서 받아오는걸로 수정
         const data = {email:emailInput, password:passwordInput}
-        await getData("login", data)
-        .then(response=>{
-            if(response.status==200){
-                const button = document.getElementsByClassName("login_button")[0];
-                button.style.backgroundColor="#7F6AEE";
-                button.style.cursor="grab";
-                setTimeout(()=>{
-                    window.location.assign("/Main");
-                }, 3000);
-            } else {
-                console.log("해당하는 사용자가 없습니다");
-            }
-        })
+        const success = await postData(`login`, data)
+        if(success!=null && success){
+            console.log("로그인 성공");
+            const button = document.getElementsByClassName("login_button")[0];
+            button.style.backgroundColor="#7F6AEE";
+            button.style.cursor="grab";
+            setTimeout(()=>{
+                window.location.assign("/Main");
+            }, 3000);
+        } else {
+            console.log("로그인 실패");
+        }
     }
 }

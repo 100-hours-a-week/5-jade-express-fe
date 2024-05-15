@@ -7,7 +7,7 @@
     <meta name="description" content="로그인할 수 있는 페이지">
     <link rel="stylesheet" href="/public/css/Log in.css">
     <link rel="stylesheet" href="/public/css/header.css">
-    <script type="text/javascript" src="/public/js/Log in.js"></script>
+    <script type="module" src="/public/js/Log in.js"></script>
 </head>
 <body>
     <section>
@@ -24,7 +24,6 @@
             class="email"
             name="email"
             pattern="[a-z0-9.,]+@[a-z0-9.,]+\.[a-z]{2,4}$"
-            oninput="validate();"
             placeholder="이메일을 입력하세요"
             required
             >
@@ -34,17 +33,15 @@
             class="password"
             name="password"
             pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,20}$"
-            oninput="validate();"
             placeholder="비밀번호를 입력하세요"
             required
             >
             <label for="password" class="helper_text">* 비밀번호를 입력해주세요.</label>
             <button type="button"
             id="submit" 
-            onClick="buttonClicked();"
             class="login_button">로그인</button>
         </form>
-        <a href="/Sign in.html" class="goto_signin">회원가입</a>
+        <a href="/Sign_in" class="goto_signin">회원가입</a>
     </section>
 </body>
 </html>

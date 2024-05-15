@@ -1,8 +1,8 @@
-const getData = require('./fileFetch').getData;
-const postData = require('./fileFetch').postData;
-
-window.addEventListener("load", (event)=>{
-    const userList = getData("user");
+import { getData, postData } from "./fileFetch.js";
+document.getElementsByClassName("post")[0].addEventListener("change", validateForm);
+document.getElementById("submit").addEventListener("click", Signin);
+window.addEventListener("load", async (event)=>{
+    const userList = await getData("user");
     validateForm(userList);
 })
 
@@ -131,6 +131,11 @@ async function Signin(){
         nickname: nickname.value,
         profile_image: image
     }
-    await postData("user", data);
-    window.location.assign("/");
+    const success = await postData("user", data);
+    if(success!=null&&success){
+        console.log("회원가입이 완료되었습니다.");
+        window.location.assign("/");
+    } else {
+        console.log("회원가입에 실패했습니다.");
+    }
 }
