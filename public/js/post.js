@@ -9,7 +9,7 @@ textarea.addEventListener("change", commentColor);
 // 이벤트
 window.addEventListener("load", async (event) => {
     const url = window.location.href;
-    const postId = url.match(/\/(\d+)$/)[1];
+    const postId = url.match(/post\/(\d+)/)[1];
     await getPost(postId)
     const editButton = document.querySelector("#post_edit");
     editButton.addEventListener("click", ()=>editPost(postId));
@@ -61,23 +61,23 @@ function showPost(postId){
 async function editComment(commentId){
     const comment = await getData(`comment/${commentId}`, {});
     const button = document.getElementById("comment_write_button");
-    button.innerHTML = "댓글 수정";
+    const button2 = document.getElementById("comment_edit_button");
     
     // 이부분 작업중
+    //https://parksay-dev.tistory.com/110
+    // getEventListeners가 브라우저에서 작동을안함
     // 그냥 버튼 두개 만들고 하나 숨겼다가 표시하는게 나을듯
-    const listenerList = getEventListeners(button);
-    button.removeEventListener('click', listenerList.click[0].listener);
-    
-    
+    button.style.display = "none";
+    button2.style.display = "block";
+    // 완
+
     const textarea = document.getElementById("comment_textarea");
     textarea.value = comment.text;
-    button.addEventListener('click', async (event)=>{
+    button2.addEventListener('click', async (event)=>{
         const data = {text: textarea.value};
         const success = await patchData(`comment/${commentId}`, data);
         if(success!=null && success){
             console.log("댓글이 수정되었습니다.");
-            textarea.value = "";
-            button.innerHTML = "댓글 등록";
             location.reload(true);
         }
         else {

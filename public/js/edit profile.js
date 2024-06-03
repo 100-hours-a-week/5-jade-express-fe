@@ -11,7 +11,7 @@ window.addEventListener("load", (event)=>{
 
 async function getUser(){
     const userId = 1; // 임시로 유저아이디 1로 지정
-    const user = await getData(`user/${userId}`)
+    const user = await getData(`user/${userId}`);
     const email = document.getElementsByClassName("show_only")[0];
     email.innerHTML = user.email;
     const nickname = document.getElementById("nickname");
@@ -20,7 +20,7 @@ async function getUser(){
 async function findNickname(nickname){
     const userData = await getData("user");
     const user = userData.find(elem=>elem.nickname===nickname);
-    if(!user){
+    if(user===undefined){
         return false;
      } else{
         return true;
@@ -33,7 +33,7 @@ async function helperChanger(){
         helper.innerHTML = "* 닉네임을 입력해주세요."
     } else if(nickname.value.length>10){
         helper.innerHTML = "* 닉네임은 최대 10자까지 작성 가능합니다."
-    } else if(findNickname(nickname.value, userList)){
+    } else if(await findNickname(nickname.value)){
         helper.innerHTML = "* 중복된 닉네임 입니다."
     } else {
         // 수정하기 클릭시 수정 성공

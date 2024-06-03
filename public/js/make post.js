@@ -1,8 +1,8 @@
 import { postData } from './fileFetch.js';
 
-const form = document.getElementsByClassName("post_form");
+const form = document.getElementsByClassName("post_form")[0];
 form.addEventListener("change", helperChanger);
-document.getElementById("submit").addEventListener("click", postGenerator);
+document.getElementById("submit").addEventListener("click", ()=>{postGenerator()});
 
 function helperChanger(){
     // 버튼 색상변경 구현
@@ -28,10 +28,10 @@ async function postGenerator(){
     // post submit
     // session + plz
     const data = { title: title.value, content: content.value };
-    const success = await postData("post", data)
-    if(success!=null&&success){
+    const success = await postData("post", data);
+    window.location.assign("/Main");
+    if(success!==null&&success){
         console.log("게시글이 작성되었습니다.");
-        window.location.assign("/Main");
     } else {
         console.log("게시글 작성에 실패했습니다.");
     }

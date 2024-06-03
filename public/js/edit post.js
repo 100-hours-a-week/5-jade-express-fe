@@ -3,10 +3,10 @@ import { getData, patchData } from './fileFetch.js';
 // 이벤트 필요
 window.addEventListener("load", (event) => {
     const url = window.location.href;
-    const postId = url.match(/\/(\d+)$/)[1];
+    const postId = url.match(/edit_post\/(\d+)/)[1];
     getPost(postId);
     const button = document.getElementById("submit");
-    button.addEventListener("click", ()=>editPost(postId));
+    button.addEventListener("click", ()=>{editPost(postId)});
 });
 
 async function getPost(postId){
@@ -21,18 +21,19 @@ async function getPost(postId){
 }
 
 async function editPost(postId){
-    const title = document.getElementById("title");
-    const detail = document.getElementById("detail");
+    const title = document.getElementById("title").value;
+    const detail = document.getElementById("detail").value;
     const data = {
         title: title, 
         content: detail, 
         image: "http://image.com/test"
     };
     const success = await patchData(`post/${postId}`, data)
+    // 아래 success가 실패했을때만 출력됨, 근데 결과는 정상적으로 나옴
     if(success!==null&&success){
         console.log("게시글이 수정되었습니다.");
-        window.location.assign(`/post/${postId}`);
     } else {
         console.log("게시글 수정에 실패했습니다.");
     }
+    window.location.assign(`/post/${postId}`);
 }
