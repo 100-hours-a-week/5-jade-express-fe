@@ -1,15 +1,5 @@
-// post 파일 받아오는부분
-async function loadFile(filename){
-    const path = `http://localhost:3000/${filename}`;
-    try{
-        const response = await fetch(path);
-        const json = await response.json();
-        return json;
-    } catch(error){
-        console.error('error: ', error);
-        return null;
-    }
-}
+import { getData } from './fileFetch.js';
+
 // postGenerator를 작동시키는 이벤트가 필요
 window.addEventListener("load", (event) => {
     postGenerator();
@@ -18,8 +8,8 @@ async function postGenerator(){
     // 구현할 기능
     // 1.post.json에서 post list 가져와서 화면에 보여주기
     // 1-1. 데이터 가져오기
-    const postList = await loadFile("posts/post.json");
-    const userList = await loadFile("users/user.json");
+    const postList = await getData("post");
+    const userList = await getData("user");
     const section = document.getElementsByClassName("content_list")[0];
     // 1-2. 데이터 split하기
     // 1-2-1. 제목 최대 26자까지, 이후론 다 자름
@@ -50,7 +40,7 @@ async function postGenerator(){
             writer = userList.find((user)=>user.userId === post.writer)
             writer = writer.nickname;
             // path 수정 필요
-            path = `http://localhost:3000/views/post.html`;
+            path = `/post/${post.postId}`;
             // 이 아래부분을 어떻게 해야할까? 링크부터 return이후 받아와서 화면에 표시하기까지
             // 해결
             let postContainer = Object.assign(
@@ -81,7 +71,7 @@ async function postGenerator(){
                         </div>
                         <hr>
                         <div class="content_writer">
-                            <img src="http://localhost:3000/static/profile.svg" alt="">
+                            <img src="/public/images/profile.svg" alt="">
                             <h6>${writer}</h6>
                         </div>
                     </article>

@@ -1,16 +1,11 @@
-// user 파일 받아오는부분
-async function loadFile(filename){
-    const path = `http://localhost:3000/${filename}`;
-    try{
-        const response = await fetch(path);
-        const json = await response.json();
-        return json;
-    } catch(error){
-        console.error('error: ', error);
-        return null;
-    }
-}
-// 전역변수 데이터, this로 받아와서 활용가능한가?
+import { getData, postData } from "./fileFetch.js";
+document.getElementsByClassName("post")[0].addEventListener("change", validateForm);
+document.getElementById("submit").addEventListener("click", Signin);
+window.addEventListener("load", async (event)=>{
+    const userList = await getData("user");
+    validateForm(userList);
+})
+
 function findNickname(nickname, userData){
     const user = userData.find(elem=>elem.nickname===nickname)
     if(!user){
@@ -27,17 +22,6 @@ function findEmail(email, userData){
         return true;
     }
 }
-/*
-async function saveFile(filename, data){
-    const fs = require('fs');
-    try{
-        await fs.writeFileSync(filename, JSON.stringify(data));
-        console.log(`signin complete, ${filename}`);
-    }catch(err){
-        console.error(`${err}`);
-    }
-}
-*/
 
 // 닉네임 검사
 function validateNickname(nickname, userData){
@@ -121,14 +105,14 @@ function validateEmail(email, userData){
         return true;
     }
 }
-async function validateForm(){
-    const userData = await loadFile("users/user.json");
-    // null 값 검사 + 한번만 받아오게끔 나중에 작업
+async function validateForm(userData){
+    // 이거 한번만 주는데 되려나 모르겠음
     const email=document.getElementsByClassName("email")[0];
     const password=document.getElementsByClassName("password")[0];
     const passwordCheck=document.getElementsByClassName("password_check")[0];
     const nickname=document.getElementsByClassName("nickname")[0];
-    if(validateEmail(email.value, userData) 
+    if(userData!==null
+    && validateEmail(email.value, userData) 
     && validatePassword(password.value, passwordCheck.value) 
     && validateNickname(nickname.value, userData)){
         const button=document.getElementsByClassName("signin_button")[0];
@@ -137,24 +121,21 @@ async function validateForm(){
     }
 }
 async function Signin(){
-    const dataArr = await loadFile("users/user.json");
     const image="http://image.com/test";
     const email=document.getElementsByClassName("email")[0];
     const password=document.getElementsByClassName("password")[0];
     const nickname=document.getElementsByClassName("nickname")[0];
-    // 새로 등록할 userId 구하기(마지막 userId+1)
-    let signinId = dataArr.findLastIndex(elem=>elem.userId>1);
-    // json형식 만들고 array에 추가
-    const userData = {
-        "userId": signinId+2, 
-        "email": email.value, 
-        "password": password.value, 
-        "nickname": nickname.value,
-        "profile_image": image // image upload는 보류
+    const data = {
+        email: email.value, 
+        password: password.value, 
+        nickname: nickname.value,
+        profile_image: image
     }
-    await dataArr.push(userData);
-    console.log(dataArr);
-    // user.js에 저장 - 나중에 수정하자
-    //await saveFile("../users/user.json", dataArr);
-    window.location.assign("http://localhost:3000/views/Log in.html");
+    const success = await postData("user", data);
+    if(success!=null&&success){
+        console.log("회원가입이 완료되었습니다.");
+        window.location.assign("/");
+    } else {
+        console.log("회원가입에 실패했습니다.");
+    }
 }

@@ -1,22 +1,27 @@
-async function loadFile(filename){
-    const path = `http://localhost:3000/${filename}`;
-    try{
-        const response = await fetch(path);
-        const json = await response.json();
-        return json;
-    } catch(error){
-        console.error('error: ', error);
-        return null;
-    }
-}
+import { getData, postData, patchData, deleteData } from './fileFetch.js';
 
+const postCancel = document.getElementById("post_cancel");
+const commentCancel = document.getElementById("comment_cancel");
+postCancel.addEventListener("click", cancelPost);
+commentCancel.addEventListener("click", cancelComment);
+const textarea = document.getElementById("comment_textarea");
+textarea.addEventListener("change", commentColor);
 // 이벤트
-window.addEventListener("load", (event) => {
-    getPost();
+window.addEventListener("load", async (event) => {
+    const url = window.location.href;
+    const postId = url.match(/post\/(\d+)/)[1];
+    await getPost(postId)
+    const editButton = document.querySelector("#post_edit");
+    editButton.addEventListener("click", ()=>editPost(postId));
+    const deleteButton = document.querySelector("#post_delete");
+    deleteButton.addEventListener("click", ()=>showPost(postId));
+    const commentPostbtn = document.getElementById("comment_write_button");
+    commentPostbtn.addEventListener("click", ()=>postComment(postId));
     // 댓글창 값 추적하기
     // mutationObserver 사용해서 값 변경 추적
     // mutation으로 하니까 작동안함
 });
+
 // 아래 함수를 onchange()로 불러오는 방법으로 변경
 function commentColor(){
     const target = document.getElementById("comment_textarea");
@@ -39,69 +44,79 @@ function cancelPost(){
     modal.style.display="none";
     document.body.style.removeProperty("overflow");
 }
-function showComment(){
+function showComment(commentId){
     const modal = document.getElementById("comment_modal");
     modal.style.display="block";
     document.body.style.overflow = 'hidden';
+    const deleteButton = document.getElementById("comment_proc");
+    deleteButton.addEventListener("click", ()=>deleteComment(commentId));
 }
-function showPost(){
+function showPost(postId){
     const modal = document.getElementById("post_modal");
     modal.style.display="block";
     document.body.style.overflow = 'hidden';
+    const deleteButton = document.getElementById("post_proc");
+    deleteButton.addEventListener("click", ()=>deletePost(postId));
 }
-async function editComment(){
-    const commentId = 1;
-    const commentList = await loadFile("comments/comment.json");
-    const comment = commentList.findIndex(elem=>elem.commentId===commentId);
+async function editComment(commentId){
+    const comment = await getData(`comment/${commentId}`, {});
     const button = document.getElementById("comment_write_button");
-    button.innerHTML = "댓글 수정";
+    const button2 = document.getElementById("comment_edit_button");
+    
+    // 이부분 작업중
+    //https://parksay-dev.tistory.com/110
+    // getEventListeners가 브라우저에서 작동을안함
+    // 그냥 버튼 두개 만들고 하나 숨겼다가 표시하는게 나을듯
+    button.style.display = "none";
+    button2.style.display = "block";
+    // 완
+
     const textarea = document.getElementById("comment_textarea");
-    button.setAttribute("onclick", "");
-    textarea.value = commentList[comment].text;
-    button.addEventListener('click', (event)=>{
-        console.log(textarea.value);
-        commentList[comment].text = textarea.value;
-        textarea.value = "";
-        button.innerHTML = "댓글 등록";
-        button.setAttribute("onclick", "postComment()");
-        console.log(commentList);
+    textarea.value = comment.text;
+    button2.addEventListener('click', async (event)=>{
+        const data = {text: textarea.value};
+        const success = await patchData(`comment/${commentId}`, data);
+        if(success!=null && success){
+            console.log("댓글이 수정되었습니다.");
+            location.reload(true);
+        }
+        else {
+            console.log("댓글 수정에 실패했습니다.");
+        }
     })
-    // post commentList to comment.json
 }
-async function deleteComment(){
-    const commentId = 1;
-    const commentList = await loadFile("comments/comment.json");
-    const index = commentList.findIndex(elem=>elem.commentId===commentId);
-    if(index>-1) commentList.splice(index, 1);
-    console.log(commentList);
-    // post commentList to comment.json
+
+async function deleteComment(commentId){
+    const success = await deleteData(`comment/${commentId}`)
+    if(success!==null && success){
+        console.log("댓글이 삭제되었습니다.");
+        location.reload(true);
+    } else {
+        console.log("댓글 삭제에 실패했습니다.");
+    }
 }
-function editPost(){
-    // 경로 수정 필요 - 라우팅
-    window.location.assign("http://localhost:3000/views/edit post.html");
+function editPost(postId){
+    window.location.assign(`/edit_post/${postId}`);
 }
-async function deletePost(){
+async function deletePost(postId){
     // 게시글 삭제
-    const postList = await loadFile("posts/post.json");
-    const postId = 1;
-    const index = postList.findIndex(elem=>elem.id===postId);
-    if(index>-1) postList.splice(index, 1);
-    console.log(postList);
-    // post to post.json
-    window.location.assign("http://localhost:3000/views/Main.html");
+    const success = await deleteData(`post/${postId}`)
+    if(success!==null && success){
+        console.log("게시글이 삭제되었습니다.");
+        window.location.assign("/Main");
+    } else {
+        console.log("게시글 삭제에 실패했습니다.");
+    }
 }
-async function getPost(){
-    const postId = 1;
-    const postList = await loadFile(`posts/post.json`);
-    const post = postList.find(elem=>elem.id===postId);
-    const commentList = await loadFile(`comments/comment.json`);
-    const comment = commentList.filter(elem=>elem.postId===postId);
-    const userList = await loadFile(`users/user.json`);
+async function getPost(postId){
+    const post = await getData(`post/${postId}`);
+    const comment = await getData(`comments/${postId}`);
+    const userList = await getData("user");
     const postArticle = document.getElementsByClassName("content")[0];
     const commentArticle = document.getElementsByClassName("comment_list")[0];
     // 글 본문 부분
     {
-        let head, like, comment, view, writer, path;
+        let head, like, comment, view, writer;
         if(post.title.length>26){
             head = post.title.substr(0, 26);
         } else head = post.title;
@@ -132,17 +147,17 @@ async function getPost(){
                     </strong></h2>
                     <div class="content_info">
                         <div class="content_writer">
-                            <img src="http://localhost:3000/static/profile.svg" alt="">
+                            <img src="/public/images/profile.svg" alt="">
                             <h6>${writer}</h6>
                             <h5>
                                 ${post.time}
                             </h5>
                         </div>
                         <div class="content_edit">
-                            <button class="edit" id="edit" onclick="editPost()">
+                            <button class="edit" id="post_edit">
                                 수정
                             </button>
-                            <button class="edit" id="delete" onclick="showPost()">
+                            <button class="edit" id="post_delete">
                                 삭제
                             </button>
                         </div>
@@ -151,7 +166,7 @@ async function getPost(){
                 <hr>
                 <div class="content_body">
                     <img class="content_image"
-                    src="http://localhost:3000/static/pexels-photo-255379.jpeg"
+                    src="/public/images/pexels-photo-255379.jpeg"
                     >
                     <p>
                         ${post.content}   
@@ -184,17 +199,17 @@ async function getPost(){
             commentContainer.innerHTML = `
                     <div class="content_info">
                         <div class="content_writer">
-                            <img src="http://localhost:3000/static/profile.svg" alt="">
+                            <img src="/public/images/profile.svg" alt="">
                             <h6>${commenter.nickname}</h6>
                             <h5>
                                 ${com.time}
                             </h5>
                         </div>
                         <div class="content_edit">
-                            <button class="edit" id="edit" onclick="editComment()">
+                            <button class="edit" id="com_edit_${com.commentId}">
                                 수정
                             </button>
-                            <button class="edit" id="delete" onclick="showComment()">
+                            <button class="edit" id="com_delete_${com.commentId}">
                                 삭제
                             </button>
                         </div>
@@ -203,38 +218,29 @@ async function getPost(){
                         ${com.text}
                     </p>
             `
-            commentArticle.appendChild(commentContainer);
+            commentArticle.appendChild(commentContainer)
+            const editButton = document.querySelector(`#com_edit_${com.commentId}`);
+            const deleteButton = document.querySelector(`#com_delete_${com.commentId}`);
+            editButton.addEventListener("click", ()=>editComment(com.commentId));
+            deleteButton.addEventListener("click", ()=>showComment(com.commentId));
         });
     }
 }
 
 // 댓글 작성부분
-async function postComment(){
-    const postId = 1;
-    const commentList = await loadFile("comments/comment.json");
-    console.log(commentList);
-    let commentId = commentList.findLastIndex(elem=>elem.commentId>1);
-    // post submit
-    const date = new Date();
-    const time = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
-    // 현재 로그인중인 user, 조회중인 post 받아와야함 필요 (지금은 이걸로 일단 대체)
-    const user = {
-        "userId": 1,
-        "email": "test@startupcode.kr",
-        "password": "Test1234!",
-        "nickname": "startup",
-        "profile_image": "https://image.kr/img.jpg"
-    }
+async function postComment(postId){
     const text = document.getElementById("comment_textarea");
-    const newComment = {
-        "postId" : postId,
-        "commentId": commentId+2,
-        "writer" : user.userId,
-        "time" : time,
-        "text" : text.value
+    const data = {text: text.value};
+    const success = await postData(`comment/${postId}`, data)
+    if(success!==null && success){
+        console.log("댓글이 등록되었습니다.");
+        text.value = "";
+        location.reload(true);
+    } else {
+        console.log("댓글 등록에 실패했습니다.");
     }
-    commentList.push(newComment);
-    console.log(commentList);
-    // post to comment.json
-    text.value = "";
 }
+
+// 이거 모달창때문에 commentId, postId 넘겨주는게 좀 힘들거같은데 이걸 어떻게하지
+// 아니면 route에서 postId 어떻게 들고오는지, 되면 더 편할듯
+// commentId만 어떻게 함수통해서 잘 넘겨주면 되는데 그러면 모달창은 일단 분리해야됨

@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign in</title>
     <meta name="description" content="회원가입할 수 있는 페이지">
-    <link rel="stylesheet" href="http://localhost:3000/static/Sign in.css">
-    <link rel="stylesheet" href="http://localhost:3000/static/header.css">
-    <script type="text/javascript" src="http://localhost:3000/views/Sign in.js"></script>
+    <link rel="stylesheet" href="/public/css/Sign in.css">
+    <link rel="stylesheet" href="/public/css/header.css">
+    <script type="module" src="/public/js/Sign in.js"></script>
 </head>
 <body>
     <section>
         <header class="header">
-            <a href="http://localhost:3000/views/Log in.html">
+            <a href="/">
                 <img 
-                src="http://localhost:3000/static/navigate_before.svg" 
+                src="/public/images/navigate_before.svg" 
                 alt="to login page"
                 >
             </a>
@@ -23,7 +23,7 @@
     </section>
     <section class="signin">
         <h2>회원가입</h2>
-        <form class="signin_form" method="post" onchange="validateForm();">
+        <form class="signin_form" method="post">
             <label for="profile"
             class="input_label"
             >프로필 사진</label>
@@ -89,12 +89,10 @@
 
             <button type="button" 
             id="submit" 
-            onclick="Signin();"
             class="signin_button">회원가입</button>
             <!-- 버튼색상 변경도 JS로 하자 -->
         </form>
-        <a href="http://localhost:3000/views/Log in.html" class="goto_login">로그인하러 가기</a>
+        <a href="/" class="goto_login">로그인하러 가기</a>
     </section>
-    <script type="module" src="Sign in.js"></script>
 </body>
 </html>

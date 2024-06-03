@@ -1,14 +1,7 @@
-async function loadFile(filename){
-    const path = `http://localhost:3000/${filename}`;
-    try{
-        const response = await fetch(path);
-        const json = await response.json();
-        return json;
-    } catch(error){
-        console.error('error: ', error);
-        return null;
-    }
-}
+import { patchData } from "./fileFetch.js";
+
+document.getElementById("submit").addEventListener("click", updatePassword);
+
 async function getUser(){
     const password = document.getElementById("password");
     const passwordCheck = document.getElementById("password_check");
@@ -59,14 +52,17 @@ window.addEventListener("load", (event)=>{
 async function updatePassword(){
     const password = document.getElementById("password");
     const password_check = document.getElementById("password_check");
+    const toast = document.getElementsByClassName("profile_message")[0];
     if(validatePassword(password.value, password_check.value)){
         const userId = 1;
-        const userList = await loadFile("users/user.json");
-        const index = userList.findIndex(elem=>elem.userId === userId);
-        userList[index].password=password.value;
-        //post to user.json
-        console.log(userList[index]);
-        const toast = document.getElementsByClassName("profile_message")[0];
+        // 세션에서 받아오는걸로 수정
+        const data = {password:password.value};
+        const success = await patchData(`user/password/${userId}`, data)
+        if(success!==null && success){
+            toast.innerHTML = "비밀번호가 변경되었습니다.";
+        } else {
+            toast.innerHTML = "비밀번호 변경에 실패했습니다.";
+        }
         toast.style.opacity = 1;
         await setTimeout(()=>{
             toast.style.opacity=0;

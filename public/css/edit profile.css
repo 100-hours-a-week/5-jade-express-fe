@@ -34,7 +34,7 @@
     height: 150px;
     border: none;
     outline: none;
-    background: url(./profile.svg) no-repeat center top;
+    background: url(/public/images/profile.svg) no-repeat center top;
     background-size: 150px;
     padding-left: 0;
 }

@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>post</title>
     <meta name="description" content="게시글 상세조회 페이지">
-    <link rel="stylesheet" href="http://localhost:3000/static/post.css">
-    <link rel="stylesheet" href="http://localhost:3000/static/header.css">
-    <script type="text/javascript" src="http://localhost:3000/views/post.js"></script>
+    <link rel="stylesheet" href="/public/css/post.css">
+    <link rel="stylesheet" href="/public/css/header.css">
+    <script type="module" src="/public/js/post.js"></script>
 </head>
 <body>
     <section>
         <header class="header">
-            <a href="http://localhost:3000/views/Main.html">
+            <a href="/Main">
                 <img 
-                src="http://localhost:3000/static/navigate_before.svg" 
+                src="/public/images/navigate_before.svg" 
                 alt="to Main page"
                 >
             </a>
             <h1>아무 말 대잔치</h1>
             <label for="checkbox"
-            src="http://localhost:3000/static/profile.svg"
+            src="/public/images/profile.svg"
             class="profile_img">
             </label>
             <input type="checkbox"
@@ -28,17 +28,17 @@
             id="checkbox">
             <div class="dropdown">
                 <ul>
-                    <a href="http://localhost:3000/views/edit profile.html">
+                    <a href="/edit_profile">
                         <li class="dropdown_text">
                             회원정보수정
                         </li>    
                     </a>
-                    <a href="http://localhost:3000/views/edit password.html">
+                    <a href="/edit_password">
                         <li class="dropdown_text">
                             비밀번호수정
                         </li>    
                     </a>
-                    <a href="http://localhost:3000/views/Log in.html">
+                    <a href="/logout">
                         <li class="dropdown_text">
                             로그아웃
                         </li>
@@ -53,8 +53,10 @@
             <h2><strong>게시글을 삭제하시겠습니까?</strong></h2>
             <p>삭제한 내용은 복구 할 수 없습니다.</p>
             <div class="button_container">
-                <button type="button" class="cancel_btn" onclick="cancelPost()">취소</button>
-                <button type="button" class="proc_btn" onclick="deletePost()">확인</button>
+                <button type="button" class="cancel_btn" 
+                id="post_cancel">취소</button>
+                <button type="button" class="proc_btn" 
+                id="post_proc">확인</button>
             </div>
         </div>
     </div>
@@ -63,8 +65,10 @@
             <h2><strong>댓글을 삭제하시겠습니까?</strong></h2>
             <p>삭제한 내용은 복구 할 수 없습니다.</p>
             <div class="button_container">
-                <button type="button" class="cancel_btn" onclick="cancelComment()">취소</button>
-                <button type="button" class="proc_btn" onclick="deleteComment()">확인</button>
+                <button type="button" class="cancel_btn" 
+                id="comment_cancel">취소</button>
+                <button type="button" class="proc_btn" 
+                id="comment_proc">확인</button>
             </div>
         </div>
     </div>
@@ -77,16 +81,20 @@
             cols="30" 
             rows="10"
             placeholder="댓글을 남겨주세요!"
-            onchange="commentColor()"
             minlength="1"
             ></textarea>
             <hr>
             <button class="write_button"
             type=""
             id="comment_write_button"
-            onclick="postComment();"
             >
                 댓글 등록
+            </button>
+            <button class="write_button"
+            type=""
+            id="comment_edit_button"
+            >
+                댓글 수정
             </button>
         </article>
         <article class="comment_list">

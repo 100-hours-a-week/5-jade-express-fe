@@ -1,24 +1,16 @@
-async function loadFile(filename){
-    const path = `http://localhost:3000/${filename}`;
-    try{
-        const response = await fetch(path);
-        const json = await response.json();
-        return json;
-    } catch(error){
-        console.error('error: ', error);
-        return null;
-    }
-}
+import { getData, patchData } from './fileFetch.js';
 
 // 이벤트 필요
 window.addEventListener("load", (event) => {
-    getPost();
+    const url = window.location.href;
+    const postId = url.match(/edit_post\/(\d+)/)[1];
+    getPost(postId);
+    const button = document.getElementById("submit");
+    button.addEventListener("click", ()=>{editPost(postId)});
 });
 
-async function getPost(){
-    const postId = 1;
-    const postList = await loadFile(`posts/post.json`);
-    const post = postList.find(elem=>elem.id===postId);
+async function getPost(postId){
+    const post = await getData(`post/${postId}`);
     const title = document.getElementById("title");
     title.value = post.title;
     const detail = document.getElementById("detail");
@@ -28,18 +20,20 @@ async function getPost(){
     // 이미지 업로드 보류
 }
 
-async function editPost(){
-    const postId = 1;
-    let postList = await loadFile(`posts/post.json`);
-    const postIndex = postList.findIndex(elem=>elem.id===postId);
-    const title = document.getElementById("title");
-    const detail = document.getElementById("detail");
-    //const image = document.getElementById("file");
-    postList[postIndex].title = title.value;
-    postList[postIndex].content = detail.value;
-    console.log(postList);
-    //postList[postIndex].image = file.value;
-
-    // post to post.json 구현 필요
-    window.location.assign("http://localhost:3000/views/post.html");
+async function editPost(postId){
+    const title = document.getElementById("title").value;
+    const detail = document.getElementById("detail").value;
+    const data = {
+        title: title, 
+        content: detail, 
+        image: "http://image.com/test"
+    };
+    const success = await patchData(`post/${postId}`, data)
+    // 아래 success가 실패했을때만 출력됨, 근데 결과는 정상적으로 나옴
+    if(success!==null&&success){
+        console.log("게시글이 수정되었습니다.");
+    } else {
+        console.log("게시글 수정에 실패했습니다.");
+    }
+    window.location.assign(`/post/${postId}`);
 }

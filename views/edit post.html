@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>edit post</title>
     <meta name="description" content="게시글 수정 페이지">
-    <link rel="stylesheet" href="http://localhost:3000/static/make post.css">
-    <link rel="stylesheet" href="http://localhost:3000/static/edit post.css">
-    <link rel="stylesheet" href="http://localhost:3000/static/header.css">
-    <script type="text/javascript" src="http://localhost:3000/views/edit post.js"></script>
+    <link rel="stylesheet" href="/public/css/make post.css">
+    <link rel="stylesheet" href="/public/css/edit post.css">
+    <link rel="stylesheet" href="/public/css/header.css">
+    <script type="module" src="/public/js/edit post.js"></script>
 </head>
 <body>
     <section>
         <header class="header">
-            <a href="http://localhost:3000/views/Main.html">
+            <a href="/Main.html">
                 <img 
-                src="http://localhost:3000/static/navigate_before.svg" 
+                src="/public/images/navigate_before.svg" 
                 alt="to Main page"
                 >
             </a>
             <h1>아무 말 대잔치</h1>
             <label for="checkbox"
-            src="http://localhost:3000/static/profile.svg"
+            src="/public/images/profile.svg"
             class="profile_img">
             </label>
             <input type="checkbox"
@@ -29,17 +29,17 @@
             id="checkbox">
             <div class="dropdown">
                 <ul>
-                    <a href="http://localhost:3000/views/edit profile.html">
+                    <a href="/edit_profile.html">
                         <li class="dropdown_text">
                             회원정보수정
                         </li>    
                     </a>
-                    <a href="http://localhost:3000/views/edit password.html">
+                    <a href="/edit_password.html">
                         <li class="dropdown_text">
                             비밀번호수정
                         </li>    
                     </a>
-                    <a href="http://localhost:3000/views/Log in.html">
+                    <a href="/Log in.html">
                         <li class="dropdown_text">
                             로그아웃
                         </li>
@@ -85,8 +85,7 @@
 
             <button type="" 
             id="submit" 
-            class="submit_button"
-            onclick="editPost()">수정하기</button>
+            class="submit_button">수정하기</button>
         </form>
     </section>
 </body>
