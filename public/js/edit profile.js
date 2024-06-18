@@ -10,15 +10,15 @@ window.addEventListener("load", (event)=>{
 })
 
 async function getUser(){
-    const userId = 1; // 임시로 유저아이디 1로 지정
-    const user = await getData(`user/${userId}`);
+    const user = await getData("user");
     const email = document.getElementsByClassName("show_only")[0];
     email.innerHTML = user.email;
     const nickname = document.getElementById("nickname");
     nickname.value = user.nickname;
 }
+// 추후에 백엔드 서버에 닉네임을 넘기면 validate check를 해주는편이 좋을 것 같다
 async function findNickname(nickname){
-    const userData = await getData("user");
+    const userData = await getData("users");
     const user = userData.find(elem=>elem.nickname===nickname);
     if(user===undefined){
         return false;
@@ -30,17 +30,15 @@ async function helperChanger(){
     const helper = document.getElementsByClassName("helper_text")[0];
     const nickname = document.getElementById("nickname");
     if(nickname.value.length===0){
-        helper.innerHTML = "* 닉네임을 입력해주세요."
+        helper.innerHTML = "* 닉네임을 입력해주세요.";
     } else if(nickname.value.length>10){
-        helper.innerHTML = "* 닉네임은 최대 10자까지 작성 가능합니다."
+        helper.innerHTML = "* 닉네임은 최대 10자까지 작성 가능합니다.";
     } else if(await findNickname(nickname.value)){
-        helper.innerHTML = "* 중복된 닉네임 입니다."
+        helper.innerHTML = "* 중복된 닉네임 입니다.";
     } else {
         // 수정하기 클릭시 수정 성공
-        const userId = 1; // 임시로 유저아이디 1로 지정
-        // 이후 세션에서 받아오는걸로 수정
         const data = {nickname:nickname.value};
-        const success = await patchData(`user/${userId}`, data)
+        const success = await patchData("user", data);
         if(success!==null&&success){
             console.log("닉네임 수정이 완료되었습니다.");
             const toast = document.getElementsByClassName("profile_message")[0];
@@ -66,9 +64,7 @@ function cancelUser(){
 }
 // 회원 탈퇴
 async function deleteUser(){
-    const userId = 1;
-    // 이후 세션에서 받아오는걸로 수정
-    const success = await deleteData(`user/${userId}`)
+    const success = await deleteData("user");
     if(success!==null&&success){
         console.log("회원탈퇴가 완료되었습니다.");
         window.location.assign("/");

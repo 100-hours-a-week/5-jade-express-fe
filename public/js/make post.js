@@ -20,13 +20,12 @@ function helperChanger(){
 
 }
 async function postGenerator(){
-    // 나중에 세션에서 userId 받아오면됨
-    const userId = 1;
+    // 세션에서 userId 가져오기
+    // const userId = await getData("session");
     // 게시글 본문을 LONGTEXT타입으로 저장 어떻게 함
     const title = document.getElementById("title");
     const content = document.getElementById("detail");
     // post submit
-    // session + plz
     const data = { title: title.value, content: content.value };
     const success = await postData("post", data);
     window.location.assign("/Main");

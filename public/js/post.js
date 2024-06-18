@@ -10,7 +10,7 @@ textarea.addEventListener("change", commentColor);
 window.addEventListener("load", async (event) => {
     const url = window.location.href;
     const postId = url.match(/post\/(\d+)/)[1];
-    await getPost(postId)
+    await getPost(postId); // fetch함수 아님
     const editButton = document.querySelector("#post_edit");
     editButton.addEventListener("click", ()=>editPost(postId));
     const deleteButton = document.querySelector("#post_delete");
@@ -87,7 +87,7 @@ async function editComment(commentId){
 }
 
 async function deleteComment(commentId){
-    const success = await deleteData(`comment/${commentId}`)
+    const success = await deleteData(`comment/${commentId}`);
     if(success!==null && success){
         console.log("댓글이 삭제되었습니다.");
         location.reload(true);
@@ -100,7 +100,7 @@ function editPost(postId){
 }
 async function deletePost(postId){
     // 게시글 삭제
-    const success = await deleteData(`post/${postId}`)
+    const success = await deleteData(`post/${postId}`);
     if(success!==null && success){
         console.log("게시글이 삭제되었습니다.");
         window.location.assign("/Main");
@@ -111,7 +111,7 @@ async function deletePost(postId){
 async function getPost(postId){
     const post = await getData(`post/${postId}`);
     const comment = await getData(`comments/${postId}`);
-    const userList = await getData("user");
+    const userList = await getData("users");
     const postArticle = document.getElementsByClassName("content")[0];
     const commentArticle = document.getElementsByClassName("comment_list")[0];
     // 글 본문 부분
@@ -133,7 +133,7 @@ async function getPost(postId){
             comment = parseInt(post.comments/1000);
             comment = comment.toString()+'k';
         } else comment = post.comments;
-        writer = userList.find((user)=>user.userId === post.writer)
+        writer = userList.find((user)=>user.userId === post.writer);
         writer = writer.nickname;
         // 이 아래부분을 어떻게 해야할까? 링크부터 return이후 받아와서 화면에 표시하기까지
         // 해결

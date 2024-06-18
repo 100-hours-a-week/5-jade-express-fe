@@ -2,7 +2,7 @@ import { getData, postData } from "./fileFetch.js";
 document.getElementsByClassName("post")[0].addEventListener("change", validateForm);
 document.getElementById("submit").addEventListener("click", Signin);
 window.addEventListener("load", async (event)=>{
-    const userList = await getData("user");
+    const userList = await getData("users");
     validateForm(userList);
 })
 

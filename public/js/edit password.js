@@ -11,7 +11,7 @@ async function getUser(){
 }
 // 비밀번호 검사
 function validatePassword(password, password2){
-    const validate = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,20}$/
+    const validate = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,20}$/;
     const helper = document.getElementById("password_helper");
     const helper2 = document.getElementById("password_check_helper");
     const button = document.getElementsByClassName("password_button")[0];
@@ -54,10 +54,8 @@ async function updatePassword(){
     const password_check = document.getElementById("password_check");
     const toast = document.getElementsByClassName("profile_message")[0];
     if(validatePassword(password.value, password_check.value)){
-        const userId = 1;
-        // 세션에서 받아오는걸로 수정
         const data = {password:password.value};
-        const success = await patchData(`user/password/${userId}`, data)
+        const success = await patchData("user/password", data)
         if(success!==null && success){
             toast.innerHTML = "비밀번호가 변경되었습니다.";
         } else {

@@ -3,9 +3,9 @@ const router = express.Router();
 const path = require('path');
 const bdps = require('body-parser');
 
-
 router.use(bdps.urlencoded({extended:true}));
 router.use(bdps.json());
+
 
 // 로그인 페이지
 router.get('/', (req, res) => {
@@ -48,9 +48,8 @@ router.get('/edit_password', (req, res) =>
 );
 
 // 로그아웃
-router.get('/logout', (req, res) => {
-    res.clearCookie('user');
-    res.redirect('/');
-});
+router.get('/logout', (req, res) => 
+    res.sendFile(path.join(__dirname, "..", "views", 'logout.html'))
+);
 
 module.exports = router;

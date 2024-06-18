@@ -9,7 +9,7 @@ async function postGenerator(){
     // 1.post.json에서 post list 가져와서 화면에 보여주기
     // 1-1. 데이터 가져오기
     const postList = await getData("post");
-    const userList = await getData("user");
+    const userList = await getData("users");
     const section = document.getElementsByClassName("content_list")[0];
     // 1-2. 데이터 split하기
     // 1-2-1. 제목 최대 26자까지, 이후론 다 자름
@@ -37,7 +37,7 @@ async function postGenerator(){
                 comment = parseInt(post.comments/1000);
                 comment = comment.toString()+'k';
             } else comment = post.comments;
-            writer = userList.find((user)=>user.userId === post.writer)
+            writer = userList.find((user)=>user.userId === post.writer);
             writer = writer.nickname;
             // path 수정 필요
             path = `/post/${post.postId}`;
