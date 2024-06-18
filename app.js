@@ -3,9 +3,14 @@ require('dotenv').config();
 const path = require('path');
 const app = express();
 const port = process.env.PORT;
+const cors = require('cors');
 
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
+
+app.use(cors({
+  credentials: true
+}));
 
 // 정적 파일 설정
 app.use('/public', express.static(path.join(__dirname, "public")));
