@@ -110,8 +110,12 @@ async function deletePost(postId){
 }
 async function getPost(postId){
     const post = await getData(`post/${postId}`);
-    const comment = await getData(`comments/${postId}`);
-    const userList = await getData("users");
+    if(post==null){
+        console.log("게시글을 불러오는데 실패했습니다.");
+        window.location.assign("/Main");
+    }
+    console.log(post);
+    const commentList = await getData(`comments/${postId}`);
     const postArticle = document.getElementsByClassName("content")[0];
     const commentArticle = document.getElementsByClassName("comment_list")[0];
     // 글 본문 부분
@@ -133,10 +137,8 @@ async function getPost(postId){
             comment = parseInt(post.comments/1000);
             comment = comment.toString()+'k';
         } else comment = post.comments;
-        writer = userList.find((user)=>user.userId === post.writer);
-        writer = writer.nickname;
-        // 이 아래부분을 어떻게 해야할까? 링크부터 return이후 받아와서 화면에 표시하기까지
-        // 해결
+        writer = await getData(`user/${post.userId}`);
+        const writeTime = post.time.slice(0, 19).replace('T', ' ');
         let postContainer = Object.assign(
             document.createElement('div'), {}
         );
@@ -148,9 +150,9 @@ async function getPost(postId){
                     <div class="content_info">
                         <div class="content_writer">
                             <img src="/public/images/profile.svg" alt="">
-                            <h6>${writer}</h6>
+                            <h6>${writer.nickname}</h6>
                             <h5>
-                                ${post.time}
+                                ${writeTime}
                             </h5>
                         </div>
                         <div class="content_edit">
@@ -190,19 +192,23 @@ async function getPost(postId){
         postArticle.appendChild(postContainer);
     }
     // 글 댓글 부분
-    {
-        comment.map((com)=>{
-            const commenter = userList.find(elem=>elem.userId===com.writer);
+    if(commentList!==null) {
+        commentList.map(async (com)=>{
+            let commenter = await getData(`user`, com.userId);
+            if(commenter!==null){
+                commenter = commenter;
+            }
             let commentContainer = Object.assign(
                 document.createElement('div'), {class: "comment"}
             );
+            const writeTime = com.time.slice(0, 19).replace('T', ' ');
             commentContainer.innerHTML = `
                     <div class="content_info">
                         <div class="content_writer">
                             <img src="/public/images/profile.svg" alt="">
                             <h6>${commenter.nickname}</h6>
                             <h5>
-                                ${com.time}
+                                ${writeTime}
                             </h5>
                         </div>
                         <div class="content_edit">

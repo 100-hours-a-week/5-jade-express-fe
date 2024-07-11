@@ -21,6 +21,28 @@ export async function getData(path){
         return null;
     }
 }
+export async function checkData(path, data){
+    const url = `http://localhost:8080/${path}`;
+    const options = {method:'POST', 
+    body: JSON.stringify(data), 
+    headers:{'Content-Type':'application/json'}, 
+    credentials: 'include', 
+    mode: 'cors'
+    };
+    try{
+        const response = await fetch(url, options);
+        if(response.status==200){
+            return false;
+        }else{
+            const text = await response.text();
+            console.log(text);
+            return true;
+        }
+    } catch(error){
+        console.error('error: ', error);
+        return true;
+    }
+}
 // 성공시 true, 실패시 false, 에러시 null
 export async function postData(path, data){
     const url = `http://localhost:8080/${path}`;

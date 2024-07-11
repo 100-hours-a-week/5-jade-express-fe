@@ -9,6 +9,9 @@ async function postGenerator(){
     // 1.post.json에서 post list 가져와서 화면에 보여주기
     // 1-1. 데이터 가져오기
     const postList = await getData("post");
+    if(postList==null){
+        console.log("게시글이 없습니다.");
+    }
     const userList = await getData("users");
     const section = document.getElementsByClassName("content_list")[0];
     // 1-2. 데이터 split하기
@@ -37,12 +40,13 @@ async function postGenerator(){
                 comment = parseInt(post.comments/1000);
                 comment = comment.toString()+'k';
             } else comment = post.comments;
-            writer = userList.find((user)=>user.userId === post.writer);
+            writer = userList.find((user)=>user.userId === post.userId);
             writer = writer.nickname;
             // path 수정 필요
             path = `/post/${post.postId}`;
             // 이 아래부분을 어떻게 해야할까? 링크부터 return이후 받아와서 화면에 표시하기까지
             // 해결
+            const writeTime = post.time.slice(0, 19).replace('T', ' ');
             let postContainer = Object.assign(
                 document.createElement('a'), {href:`${path}`}
             );
@@ -65,7 +69,7 @@ async function postGenerator(){
                                     </h6>
                                 </div>
                                 <h5>
-                                    ${post.time}
+                                    ${writeTime}
                                 </h5>
                             </div>
                         </div>

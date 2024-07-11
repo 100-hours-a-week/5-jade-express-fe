@@ -1,12 +1,15 @@
 import { getData, postData } from "./fileFetch.js";
-document.getElementsByClassName("post")[0].addEventListener("change", validateForm);
 document.getElementById("submit").addEventListener("click", Signin);
 window.addEventListener("load", async (event)=>{
     const userList = await getData("users");
     validateForm(userList);
+    document.getElementsByClassName("signin_form")[0].addEventListener("change", ()=>{validateForm(userList)});
 })
 
 function findNickname(nickname, userData){
+    if(userData==null || userData==undefined){
+        return false;
+    }
     const user = userData.find(elem=>elem.nickname===nickname)
     if(!user){
         return false;
@@ -15,6 +18,9 @@ function findNickname(nickname, userData){
     }
 }
 function findEmail(email, userData){
+    if(userData==null || userData==undefined){
+        return false;
+    }
     const user = userData.find(elem=>elem.email===email);
     if(!user){
         return false;
@@ -106,12 +112,11 @@ function validateEmail(email, userData){
     }
 }
 async function validateForm(userData){
-    // 이거 한번만 주는데 되려나 모르겠음
     const email=document.getElementsByClassName("email")[0];
     const password=document.getElementsByClassName("password")[0];
     const passwordCheck=document.getElementsByClassName("password_check")[0];
     const nickname=document.getElementsByClassName("nickname")[0];
-    if(userData!==null
+    if(userData!==undefined
     && validateEmail(email.value, userData) 
     && validatePassword(password.value, passwordCheck.value) 
     && validateNickname(nickname.value, userData)){

@@ -1,4 +1,4 @@
-import { getData, patchData, deleteData} from "./fileFetch.js";
+import { getData, checkData, patchData, deleteData} from "./fileFetch.js";
 
 document.getElementById("submit").addEventListener("click", helperChanger);
 document.getElementsByClassName("dismiss")[0].addEventListener("click", showModal);
@@ -18,26 +18,25 @@ async function getUser(){
 }
 // 추후에 백엔드 서버에 닉네임을 넘기면 validate check를 해주는편이 좋을 것 같다
 async function findNickname(nickname){
-    const userData = await getData("users");
-    const user = userData.find(elem=>elem.nickname===nickname);
-    if(user===undefined){
-        return false;
-     } else{
+    const bool = await checkData("nickname", nickname);
+    if(bool){
         return true;
+     } else{
+        return false;
     }
 }
 async function helperChanger(){
     const helper = document.getElementsByClassName("helper_text")[0];
     const nickname = document.getElementById("nickname");
+    const data = {nickname:nickname.value};
     if(nickname.value.length===0){
         helper.innerHTML = "* 닉네임을 입력해주세요.";
     } else if(nickname.value.length>10){
         helper.innerHTML = "* 닉네임은 최대 10자까지 작성 가능합니다.";
-    } else if(await findNickname(nickname.value)){
+    } else if(await findNickname(data)){
         helper.innerHTML = "* 중복된 닉네임 입니다.";
     } else {
-        // 수정하기 클릭시 수정 성공
-        const data = {nickname:nickname.value};
+        // 수정하기 클릭시 수정 성공=
         const success = await patchData("user", data);
         if(success!==null&&success){
             console.log("닉네임 수정이 완료되었습니다.");
